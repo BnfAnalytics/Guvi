@@ -1,0 +1,46 @@
+# Import Libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+
+#Load the Dataset
+data=pd.read_csv('/kaggle/input/customerchurn-dm11-12/customer_churn_dataset.csv')
+data.head()
+
+print(data.shape)
+print('*****************************************************')
+print(data.describe())
+print('*****************************************************')
+print(data.info())
+
+#Split the data into features(x) and target variable(y)
+x=data.drop('churn_status',axis=1)
+y=data['churn_status']
+
+# Encode categorical data variables
+label_encoder=LabelEncoder()
+x_encoded=x.apply(label_encoder.fit_transform)
+
+x_encoded.head()
+
+# SPlit the data into training and testing sets
+x_train, x_test,y_train, y_test=train_test_split(x_encoded,y,test_size=0.25,random_state=21)
+
+print(x_train.shape)
+print(x_test.shape)
+
+# initialize the model
+model=DecisionTreeClassifier()
+
+
+# Train the model
+model.fit(x_train,y_train)
+
+# Make a predictions on the test set
+y_pred=model.predict(x_test)
+
+#Evaluate the model
+accuracy=accuracy_score(y_test,y_pred)
+print("Accuracy:",accuracy)
